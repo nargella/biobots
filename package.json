@@ -18,6 +18,8 @@
   },
   "homepage": "https://github.com/nargella/biobots#readme",
   "dependencies": {
-    "electron-prebuilt": "^0.36.8"
+    "chartist": "^0.9.7",
+    "electron-prebuilt": "^0.36.8",
+    "jsonstream": "^1.0.3"
   }
 }

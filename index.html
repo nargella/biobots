@@ -3,14 +3,70 @@
   <head>
     <meta charset="UTF-8">
     <title>BioBots Print Data</title>
-    <link href='https://fonts.googleapis.com/css?family=Noto+Sans' rel='stylesheet' type='text/css'>
-    <style>
-    * {
-      font-family: 'Noto Sans', sans-serif;
-    }
-    </style>
+    <link href='node_modules/chartist/dist/chartist.min.css' rel='stylesheet' type='text/css'>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" integrity="sha384-1q8mTJOASx8j1Au+a5WDVnPi2lkFfwwEAa8hDDdjZlpLegxhjVME1fgjWPGmkzs7" crossorigin="anonymous">
   </head>
   <body>
+    <h1>Prints</h1>
 
+    <div class="container">
+      <div class="row">
+        <div class="col-md-4" id="files">
+
+        </div>
+        <div class="col-md-8" id="details">
+
+        </div>
+      </div>
+    </div>
+
+    <!-- <div class="ct-chart ct-perfect-fourth"></div> -->
+    <script>
+      var printFiles = require('./src/getAllPrintFileNames');
+      var printData = require('./src/getPrintData');
+      var rawDataPath = './bioprint-data.json';
+
+      var Chartist = require('Chartist'),
+          options = {
+            height: 500
+          };
+
+      function renderDetails(data) {
+        var container = document.getElementById('details');
+        container.innerText = '';
+        Object.keys(data).map(function (key) {
+          if (key === 'Pressure chart') return;
+          var li = document.createElement('li');
+          li.innerText = key + ': ' + data[key];
+          container.appendChild(li);
+        });
+
+        var div = document.createElement('div');
+        div.innerText = 'Extruder Pressures:';
+        container.appendChild(div);
+
+        div = document.createElement('div');
+        div.className = 'ct-chart';
+        container.appendChild(div);
+        new Chartist.Line('.ct-chart', data['Pressure chart'], options);
+
+      }
+
+      printFiles(rawDataPath, function (files) {
+        var container = document.getElementById('files');
+        files.map(function (file) {
+            var el = document.createElement('div');
+            el.innerText = file;
+            el.onclick = function () {
+              var details = printData(rawDataPath, this.innerText, renderDetails);
+            }
+            container.appendChild(el);
+        })
+
+      })
+
+
+
+    </script>
   </body>
 </html>
